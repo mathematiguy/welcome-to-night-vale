@@ -1,7 +1,7 @@
 import os, re
 import sys
 import numpy as np
-from keras.models import Sequential
+from keras.models import Sequential, load_model
 from keras.layers import Dense
 from keras.layers import Dropout
 from keras.layers import LSTM
@@ -26,11 +26,11 @@ def pre_processing(text, seq_length=100):
 	   Lowercases text, converts to integer arrays of length seq_length.
 
 	   Args:
-	   text - text file to be processed
-	   seq_length - length of character sequences to be considered 
-	   				in the training set
+	  	text - text file to be processed
+	  	seq_length - length of character sequences to be considered 
+	   				 in the training set
 		
-		Returns:
+	   Returns:
 		X - Array of integers representing character sequences from
 			the training text with length seq_length.
 			X.shape = (n_chars - seq_length, seq_length, 1)
@@ -85,23 +85,41 @@ def build_model(X, y):
 
 def Main():
 
+	# load text file
 	text_file = 'Welcome To Night Vale.txt'
 	print("Loading text file: %s" % text_file)
 	wtnv_text = load_text(text_file)
 
+	# create input + target data
 	print("Pre-processing text for model")
 	X, y = pre_processing(wtnv_text)
-	model = build_model(X, y)
+	
+	# check if a checkpoint for the file already exists
+	model_file = os.path.join(MODEL_PATH, 'wtnv-keras-model.hd5')
+	
+	if os.path.exists(model_file):
+		# load checkpoint
 
-	model.compile(loss='categorical_crossentropy', optimizer='adam',
-              	  metric=['accuracy'])
+		print("Checkpoint exists, loading from file...")
+		model = load_model(model_file)
 
-	tb_callback = TensorBoard(log_dir=LOG_PATH,
-                          	  histogram_freq=0.01, write_graph=True, 
-                          	  write_images=True)
+	else:
+		# build model from scratch
+		print("No checkpoint available. Building model from scratch..")
+
+		# build and compile mode
+		model = build_model(X, y)
+		model.compile(loss='categorical_crossentropy', optimizer='adam',
+	              	  metric=['accuracy'])
+
+	# tb_callback = TensorBoard(log_dir=LOG_PATH,
+ #                          	  histogram_freq=0.01, write_graph=True, 
+ #                          	  write_images=True)
 
 	model.fit(X, y, batch_size=100, validation_split=0.3, 
-			  verbose=1, epochs=1, callbacks=[tb_callback])
+			  verbose=1, epochs=1, 
+			  # callbacks=[tb_callback]
+			  )
 
 	print("Saving model to file...")
 	model.save(os.path.join(MODEL_PATH, 'wtnv-keras-model.hd5'))
