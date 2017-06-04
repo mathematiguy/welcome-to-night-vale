@@ -9,7 +9,7 @@ from keras.callbacks import ModelCheckpoint
 from keras.utils import np_utils
 from keras.callbacks import TensorBoard
 
-ROOT_PATH = r'C:\Users\caleb\Documents\Data Science\welcome-to-night-vale'
+ROOT_PATH = r'/home/ubuntu/pynb/welcome-to-night-vale'
 DATA_PATH = os.path.join(ROOT_PATH, 'data')
 MODEL_PATH = os.path.join(DATA_PATH, 'models')
 LOG_PATH = os.path.join(ROOT_PATH, 'logs')
@@ -86,7 +86,7 @@ def build_model(X, y):
 def Main():
 
 	# load text file
-	text_file = 'Welcome To Night Vale.txt'
+	text_file = r'Welcome To Night Vale.txt'
 	print("Loading text file: %s" % text_file)
 	wtnv_text = load_text(text_file)
 
@@ -117,7 +117,7 @@ def Main():
  #                          	  write_images=True)
 
 	model.fit(X, y, batch_size=100, validation_split=0.3, 
-			  verbose=1, epochs=1, 
+			  verbose=1, epochs=10, 
 			  # callbacks=[tb_callback]
 			  )
 
