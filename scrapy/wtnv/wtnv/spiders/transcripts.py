@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import os
+import os, re
 from io import open
 import scrapy
 from scrapy import Request
@@ -38,8 +38,12 @@ class TranscriptsSpider(scrapy.Spider):
 
     	# get transcript text
 	    transcript = response.xpath(
-	    			 	 '//*[@id="post-%s"]/div[1]/div[1]/p/text()' % page_id
+	    			 	 '//*[@id="post-%s"]/div[1]/div[1]/p' % page_id
 	    			 	 ).extract()
+
+	    # do some quick cleaning: remove tags and drop new-lines within lines
+	    transcript = [re.sub("<.+>", "", line) for line in transcript]
+	    transcript = [re.sub("\n", " ", line) for line in transcript]
 	    
 	    # set path to output files
 	    OUTPUT_PATH = r"C:\Users\caleb\Documents\Data Science\welcome-to-night-vale\data\transcripts"
@@ -48,7 +52,7 @@ class TranscriptsSpider(scrapy.Spider):
 	    transcript_file = os.path.join(OUTPUT_PATH, title + ".txt")
 	    
 	    # ensure file name is not rejected by os (windows)
-	    transcript_file = transcript_file.replace('\/:*?"<>|', '')
+	    transcript_file = transcript_file.replace(r'/:*?"<>|', '')
 	    
 	    with open(transcript_file, 'w', encoding='utf-8') as f:
 	    	# save transcript to file
