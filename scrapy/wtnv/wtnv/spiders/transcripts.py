@@ -46,14 +46,15 @@ class TranscriptsSpider(scrapy.Spider):
 	    transcript = [re.sub("\n", " ", line) for line in transcript]
 	    
 	    # set path to output files
-	    OUTPUT_PATH = r"C:\Users\caleb\Documents\Data Science\welcome-to-night-vale\data\transcripts"
+	    OUTPUT_PATH = "C:\\Users\\caleb\\Documents\\Data Science\\" + 
+	    					"welcome-to-night-vale\\data\\transcripts"
+	    
+		# ensure file name is not rejected by os (windows)
+	    title = title.replace(r'/:*?"<>|', '')
 	    
 	    # set file title as file name
 	    transcript_file = os.path.join(OUTPUT_PATH, title + ".txt")
-	    
-	    # ensure file name is not rejected by os (windows)
-	    transcript_file = transcript_file.replace(r'/:*?"<>|', '')
-	    
+	    	    
 	    with open(transcript_file, 'w', encoding='utf-8') as f:
 	    	# save transcript to file
 	    	# print('Writing transcript to file: %s' % title)
