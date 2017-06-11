@@ -20,7 +20,8 @@ class TranscriptsSpider(scrapy.Spider):
 
         for link in links:
         	# request transcript from link
-        	yield Request(link, callback=self.parse_transcript, dont_filter=True)
+        	yield Request(link, callback=self.parse_transcript, 
+        				  dont_filter=True)
     
     def parse_transcript(self, response):
 	    '''Logs the page visited, then saves transcript text to a text file'''
@@ -41,16 +42,19 @@ class TranscriptsSpider(scrapy.Spider):
 	    			 	 '//*[@id="post-%s"]/div[1]/div[1]/p' % page_id
 	    			 	 ).extract()
 
-	    # do some quick cleaning: remove tags and drop new-lines within lines
-	    transcript = [re.sub("<.+>", "", line) for line in transcript]
 	    transcript = [re.sub("\n", " ", line) for line in transcript]
+
+	    transcript = '\n\n'.join(transcript)
+
+	    # do some quick cleaning: remove tags and drop new-lines within lines
+	    transcript = re.sub("<[^<>]+>", "", transcript)
 	    
 	    # set path to output files
-	    OUTPUT_PATH = "C:\\Users\\caleb\\Documents\\Data Science\\" + 
+	    OUTPUT_PATH = "C:\\Users\\caleb\\Documents\\Data Science\\" + \
 	    					"welcome-to-night-vale\\data\\transcripts"
 	    
 		# ensure file name is not rejected by os (windows)
-	    title = title.replace(r'/:*?"<>|', '')
+	    title = re.sub(r'/|:|\*|\?|"|<|>|\|', '', title)
 	    
 	    # set file title as file name
 	    transcript_file = os.path.join(OUTPUT_PATH, title + ".txt")
@@ -58,4 +62,7 @@ class TranscriptsSpider(scrapy.Spider):
 	    with open(transcript_file, 'w', encoding='utf-8') as f:
 	    	# save transcript to file
 	    	# print('Writing transcript to file: %s' % title)
-	    	f.write("\n\n".join(transcript))
+	    	if isinstance(transcript, str):
+	    		transcript = unicode(transcript, 'utf-8')
+
+	    	f.write(transcript)

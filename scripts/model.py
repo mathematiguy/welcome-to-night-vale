@@ -254,7 +254,7 @@ def build_model(batch_size, seq_length, n_vocab,
                         rnn_size, num_layers, drop_prob)
 
 
-def set_callbacks(verbose, use_tensorboard):
+def set_callbacks(verbose, checkpoint_dir = "..\checkpoints", use_tensorboard):
 	'''Set callbacks for Keras model.
 
 	Args:
@@ -262,6 +262,9 @@ def set_callbacks(verbose, use_tensorboard):
 
 	Returns:
 	 - callbacks: (list) list of callbacks for model'''
+
+    if not os.path.exists(checkpoint_dir):
+        
 
 	callbacks = [ModelCheckpoint(
 	    			r'..\checkpoints\weights.{epoch:02d}-{val_loss:.2f}.hdf5',
