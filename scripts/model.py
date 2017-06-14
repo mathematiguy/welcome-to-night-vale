@@ -29,9 +29,7 @@ import sys, argparse, codecs
 import itertools as it
 import numpy as np
 from keras.models import Sequential, load_model
-from keras.layers import Dense
-from keras.layers import Dropout
-from keras.layers import LSTM
+from keras.layers import Dense, Dropout, LSTM
 from keras.callbacks import ModelCheckpoint, TensorBoard
 from keras.utils import np_utils
 
@@ -232,7 +230,7 @@ def build_model(batch_size, seq_length, n_vocab,
             # add last hidden layer
             model.add(LSTM(rnn_size, return_sequences=False))
         elif i == 0:
-            # add first hidden layer
+            # add first hidden layer - This crashes if num_layers == 1
             model.add(LSTM(rnn_size, 
                            batch_input_shape=(None, seq_length, n_vocab),
                            return_sequences=True))
@@ -249,22 +247,15 @@ def build_model(batch_size, seq_length, n_vocab,
 
     return model
 
-    # build and compile Keras model
-    model = build_model(batch_size, seq_length, n_vocab,
-                        rnn_size, num_layers, drop_prob)
-
 
 def set_callbacks(verbose, checkpoint_dir = "..\checkpoints", use_tensorboard):
-	'''Set callbacks for Keras model.
+    '''Set callbacks for Keras model.
 
-	Args:
-	 - use_tensorboard: (int) Add TensorBoard callback if use_tensorboard == 1
+       Args:
+         - use_tensorboard: (int) Add TensorBoard callback if use_tensorboard == 1
 
-	Returns:
-	 - callbacks: (list) list of callbacks for model'''
-
-    if not os.path.exists(checkpoint_dir):
-        
+       Returns:
+         - callbacks: (list) list of callbacks for model'''        
 
 	callbacks = [ModelCheckpoint(
 	    			r'..\checkpoints\weights.{epoch:02d}-{val_loss:.2f}.hdf5',
