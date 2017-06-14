@@ -243,7 +243,7 @@ def build_model(batch_size, seq_length, n_vocab,
 
     # compile model
     model.compile(loss='categorical_crossentropy', optimizer='adam',
-                  metric=['accuracy'])  
+                  metrics=['accuracy'])  
 
     return model
 
