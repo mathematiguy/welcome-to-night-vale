@@ -257,15 +257,15 @@ def set_callbacks(verbose, checkpoint_dir = "..\checkpoints", use_tensorboard):
        Returns:
          - callbacks: (list) list of callbacks for model'''        
 
-	callbacks = [ModelCheckpoint(
-	    			r'..\checkpoints\weights.{epoch:02d}-{val_loss:.2f}.hdf5',
+    callbacks = [ModelCheckpoint(
+                    r'..\checkpoints\weights.{epoch:02d}-{val_loss:.2f}.hdf5',
                     verbose=verbose)]
-	if use_tensorboard:
-		tb_callback = TensorBoard(log_dir=r'..\logs', histogram_freq=0.01,
+    if use_tensorboard:
+        tb_callback = TensorBoard(log_dir=r'..\logs', histogram_freq=0.01,
                               write_images=True)
-		callbacks.append(tb_callback)  
+        callbacks.append(tb_callback)  
 
-	return callbacks
+    return callbacks
 
 
 def fit_model(model, text_data, seq_length, validation_split, epochs, 
@@ -301,7 +301,7 @@ def Main():
 
     # preprocess the text - construct character dictionaries etc
     char_to_int, int_to_char, n_chars, n_vocab = \
-            					process_text(text_data, seq_length)
+                                process_text(text_data, seq_length)
 
     # build and compile Keras model
     model = build_model(batch_size, seq_length, n_vocab,
