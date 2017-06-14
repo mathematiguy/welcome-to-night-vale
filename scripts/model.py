@@ -248,7 +248,7 @@ def build_model(batch_size, seq_length, n_vocab,
     return model
 
 
-def set_callbacks(verbose, checkpoint_dir = "..\checkpoints", use_tensorboard):
+def set_callbacks(verbose, use_tensorboard, checkpoint_dir = "checkpoints"):
     '''Set callbacks for Keras model.
 
        Args:
@@ -256,12 +256,14 @@ def set_callbacks(verbose, checkpoint_dir = "..\checkpoints", use_tensorboard):
 
        Returns:
          - callbacks: (list) list of callbacks for model'''        
-
-    callbacks = [ModelCheckpoint(
-                    r'..\checkpoints\weights.{epoch:02d}-{val_loss:.2f}.hdf5',
-                    verbose=verbose)]
+    root_dir = '..'
+    checkpoint_dir = os.path.join(root_dir,
+                                  checkpoint_dir, 
+                                  'weights.{epoch:02d}-{val_loss:.2f}.hdf5')
+    callbacks = [ModelCheckpoint(checkpoint_dir, verbose=verbose)]
     if use_tensorboard:
-        tb_callback = TensorBoard(log_dir=r'..\logs', histogram_freq=0.01,
+        log_dir = os.path.join('..', 'logs')
+        tb_callback = TensorBoard(log_dir=log_dir, histogram_freq=0.01,
                               write_images=True)
         callbacks.append(tb_callback)  
 
