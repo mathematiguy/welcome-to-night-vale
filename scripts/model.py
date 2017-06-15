@@ -11,7 +11,6 @@ I modified the model to run using TensorFlow and Keras. Supports GPUs,
 as well as many other common model/optimization bells and whistles.
 
 TO DO: 
-- Implement shuffling of data for training/validation set
 - Add learning rate
 - Improve tensorboard logs
 - Implement optional text sample log callback
@@ -20,8 +19,11 @@ TO DO:
 - Optionally suppress warnings?
 - Tidy up print statements
 - Implement recursive file search
+
+DONE:
 - Double check generators are correct (i.e. correctly assign training/
   validation data in the correct proportions)
+- Implement shuffling of data for training/validation set
 '''
 
 import os, re, random
